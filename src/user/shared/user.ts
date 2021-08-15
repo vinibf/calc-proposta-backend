@@ -1,4 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { Guid } from 'guid-typescript';
+
 
 export class User {
   name: string;
