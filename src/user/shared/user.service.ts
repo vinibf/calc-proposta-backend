@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { User } from './user';
 import { Injectable } from '@nestjs/common';
 import { Guid } from 'guid-typescript';
@@ -5,7 +6,16 @@ import { Guid } from 'guid-typescript';
 @Injectable()
 export class UserService {
   // Criando um  array inMemory, no momento depois implementar o banco de dados
-  users: User[] = [];
+  users: User[] = [
+      { name: "Helama",
+        email: "helama@omega.com",
+        password: "12345678",
+        publicId: Guid.create()
+      }
+    ];
+  getAll(){
+    return this.users;
+  }
   isValidPassword(password: string): boolean {
     const minimumSize = 8;
     let isValid = false;
@@ -23,11 +33,13 @@ export class UserService {
     if (!email.includes('.com')) return false;
     return true;
   }
-  creat(user: User) {
+  create(user: User) {
     if (!this.isValidPassword(user.password)) return false;
     if (!this.isValidName(user.name)) return false;
     if (!this.isValidEmail(user.email)) return false;
     user.publicId = Guid.create();
     this.users.push(user);
+    
+    return user;
   }
 }
