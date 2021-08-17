@@ -2,7 +2,7 @@
 import { User } from './user';
 import { Injectable } from '@nestjs/common';
 import { Guid } from 'guid-typescript';
-//import * as Yup from 'yup';
+import * as Yup from 'yup';
 
 @Injectable()
 export class UserService {
@@ -15,50 +15,53 @@ export class UserService {
       publicId: Guid.create()
     }
   ];
+  login(user: User): any {
+    const profile = this.users.find(email => user.email === email.email);
+    if(profile == undefined) return false;
+    const isValidLogin = (profile.password === user.password);
+    if (isValidLogin) {
+      // gerar token
+      return {
+        name: profile.name,
+        email: profile.email,
+        publicId: profile.publicId
+      };
+    } else{
+      return false;
+    }
+  }
   async getAll() {
     return this.users;
   }
-  async create(user: User) {
-    if (this.isValidUser(user)) {
+  async create(user: User): Promise<any> {
+    const isValid = await this.isValidUser(user);
+
+    if (isValid) {
       user.publicId = Guid.create();
       this.users.push(user);
-      return user;
-    } else{
-      return null;
+      console.log("Usuário válido")
+      // gerar token
+      return {
+        name: user.name,
+        email: user.email,
+        publicId: user.publicId
+      };
+    } else {
+      console.log("Usuário não é válido")
+      return false;
     }
   }
   async isValidUser(user: User): Promise<boolean> {
-    const isValid = (
-      this.isValidName(user.name) &&
-      this.isValidEmail(user.email) &&
-      this.isValidPassword(user.password)
-    );
-    return isValid;
-    // const yupObject = Yup.object().shape({
-    //   name: Yup.string().required().min(3),
-    //   email: Yup.string().required().email(),
-    //   password: Yup.string().required().min(8)
-    // });
-    // const isValid = await yupObject.isValid(user);
-    // return isValid;
+    const existEmail = (this.users.find(email => email.email == user.email) != undefined);
+    const existName = (this.users.find(name => name.name == user.name) != undefined);
+    if (existEmail || existName) return false;
+    const minimumSizePassword = 8;
+    const minimumSizeName = 3;
+    const yupObject = Yup.object().shape({
+      name: Yup.string().required().min(minimumSizeName),
+      email: Yup.string().required().email(),
+      password: Yup.string().required().min(minimumSizePassword)
+    });
+    return await yupObject.isValid(user);
   }
-  async isValidPassword(password: string): Promise<boolean> {
-    const minimumSize = 8;
-    const isValid = password.length > minimumSize;
-    console.log(`Password ${isValid}`)
-    return isValid;
-  }
-  async isValidName(name: string): Promise<boolean> {
-    const minimumSize = 3;
-    const isValid = name.length > minimumSize;
-    console.log(`Name ${isValid}`)
-    return isValid;
-  }
-  async isValidEmail(email: string): Promise<boolean> {
-    const re = /\S+@\S+\.\S+/;
-    const isValid = re.test(email);
-    console.log(`email ${isValid}`)
-    return isValid;
-  }
-
 }
