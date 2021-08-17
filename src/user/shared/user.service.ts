@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { User } from './user';
 import { Injectable } from '@nestjs/common';
 import { Guid } from 'guid-typescript';
@@ -15,52 +14,75 @@ export class UserService {
       publicId: Guid.create()
     }
   ];
+
   login(user: User): any {
     const profile = this.users.find(email => user.email === email.email);
+
     if (profile == undefined) return false;
+
     const isValidLogin = (profile.password === user.password);
+
     if (isValidLogin) {
       // gerar token
-      return this.data(profile)
+      return this.data(profile);
+
     } else {
+
       return false;
+
     }
   }
+
   async getAll() {
+
     return this.users;
+
   }
+
   async create(user: User): Promise<any> {
+
     const isValid = await this.isValidUser(user);
 
     if (isValid) {
+
       user.publicId = Guid.create();
       this.users.push(user);
-      console.log("Usuário válido")
+      console.log("Usuário válido");
       // gerar token
-      return this.data(user)
+      return this.data(user);
+
     } else {
-      console.log("Usuário não é válido")
+
+      console.log("Usuário não é válido");
       return false;
+
     }
   }
+
   async isValidUser(user: User): Promise<boolean> {
+
     const existEmail = (this.users.find(email => email.email == user.email) != undefined);
     const existName = (this.users.find(name => name.name == user.name) != undefined);
+
     if (existEmail || existName) return false;
+
     const minimumSizePassword = 8;
     const minimumSizeName = 3;
+
     const yupObject = Yup.object().shape({
       name: Yup.string().required().min(minimumSizeName),
       email: Yup.string().required().email(),
       password: Yup.string().required().min(minimumSizePassword)
     });
+
     return await yupObject.isValid(user);
   }
+
   data(user: User) {
-  return {
-    name: user.name,
-    email: user.email,
-    publicId: user.publicId
-  };
-}
+    return {
+      name: user.name,
+      email: user.email,
+      publicId: user.publicId
+    };
+  }
 }
