@@ -17,20 +17,11 @@ export class UserService {
 
   login(user: User): any {
     const profile = this.users.find(email => user.email === email.email);
-
-    if (profile == undefined) return false;
-
+    if (profile == undefined) return null;
     const isValidLogin = (profile.password === user.password);
-
     if (isValidLogin) {
-      // gerar token
-      return this.data(profile);
-
-    } else {
-
-      return false;
-
-    }
+      return this.dto(profile);
+    } else return null;
   }
 
   async getAll() {
@@ -49,7 +40,7 @@ export class UserService {
       this.users.push(user);
       console.log("Usuário válido");
       // gerar token
-      return this.data(user);
+      return this.dto(user);
 
     } else {
 
@@ -78,10 +69,9 @@ export class UserService {
     return await yupObject.isValid(user);
   }
 
-  data(user: User) {
+  dto(user: User) {
     return {
       name: user.name,
-      email: user.email,
       publicId: user.publicId
     };
   }
