@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { User } from './user';
 import { Injectable } from '@nestjs/common';
 import { Guid } from 'guid-typescript';
@@ -8,52 +9,49 @@ export class UserService {
   // Criando um  array inMemory, no momento depois implementar o banco de dados
   users: User[] = [
     {
-      name: "Helama",
-      email: "helama@gmail.com",
-      password: "12345678",
-      publicId: Guid.create()
-    }
+      name: 'Helama',
+      email: 'helama@gmail.com',
+      password: '12345678',
+      publicId: Guid.create(),
+    },
   ];
-
-  login(user: User): any {
-    const profile = this.users.find(email => user.email === email.email);
+  validateLogin(userEmail: string, userPassword: string){
+    const profile = this.users.find((email) => userEmail === email.email);
     if (profile == undefined) return null;
-    const isValidLogin = (profile.password === user.password);
+    const isValidLogin = profile.password === userPassword;
     if (isValidLogin) {
-      return this.dto(profile);
+      return {
+        name: profile.name,
+        publicId: profile.publicId,
+      };
     } else return null;
   }
 
   async getAll() {
-
     return this.users;
-
   }
 
   async create(user: User): Promise<any> {
-
     const isValid = await this.isValidUser(user);
 
     if (isValid) {
-
       user.publicId = Guid.create();
       this.users.push(user);
-      console.log("Usuário válido");
-      // gerar token
-      return this.dto(user);
-
+      console.log('Usuário válido');
+      return {
+        name: user.name,
+        publicId: user.publicId,
+      };
     } else {
-
-      console.log("Usuário não é válido");
+      console.log('Usuário não é válido');
       return false;
-
     }
   }
-
   async isValidUser(user: User): Promise<boolean> {
-
-    const existEmail = (this.users.find(email => email.email == user.email) != undefined);
-    const existName = (this.users.find(name => name.name == user.name) != undefined);
+    const existEmail =
+      this.users.find((email) => email.email == user.email) != undefined;
+    const existName =
+      this.users.find((name) => name.name == user.name) != undefined;
 
     if (existEmail || existName) return false;
 
@@ -63,16 +61,9 @@ export class UserService {
     const yupObject = Yup.object().shape({
       name: Yup.string().required().min(minimumSizeName),
       email: Yup.string().required().email(),
-      password: Yup.string().required().min(minimumSizePassword)
+      password: Yup.string().required().min(minimumSizePassword),
     });
 
     return await yupObject.isValid(user);
-  }
-
-  dto(user: User) {
-    return {
-      name: user.name,
-      publicId: user.publicId
-    };
   }
 }
