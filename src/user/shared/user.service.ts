@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { User } from './user';
 import { Injectable } from '@nestjs/common';
 import { Guid } from 'guid-typescript';
