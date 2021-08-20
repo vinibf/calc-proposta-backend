@@ -1,13 +1,13 @@
 enum PowerSupplyEnum {
-  CONVENCIONAL = 5,
-  RENOVAVEL = -2,
+  CONVENCIONAL = 'Convencional',
+  RENOVAVEL = 'Renovável',
 }
 
 enum SubmarketEnum {
-  NORTE = 2,
-  NORDESTE = -1,
-  SUL = 3.5,
-  SUDESTE = 1.5,
+  NORTE = 'Norte',
+  NORDESTE = 'Nordeste',
+  SUL = 'Sul',
+  SUDESTE = 'Sudeste',
 }
 
 export { PowerSupplyEnum, SubmarketEnum };
