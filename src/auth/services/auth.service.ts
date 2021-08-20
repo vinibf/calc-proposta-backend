@@ -1,10 +1,12 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+
+import { compare } from 'bcrypt';
+
 import { IJwtPayLoad } from './../interfaces/jwt-payload.interface';
 import { IUserLogin } from './../interfaces/user-login-interface';
 import { UserService } from './../../user/services/user.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { IUserLoginResponse } from '../interfaces/user-login-response';
-import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +30,8 @@ export class AuthService {
         user: payload,
         token,
       };
+    } else {
+      throw new UnauthorizedException('Invalid Password');
     }
   }
 }
