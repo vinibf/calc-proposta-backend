@@ -14,7 +14,7 @@ export class UserService {
       publicId: Guid.create(),
     },
   ];
-  validateLogin(userEmail: string, userPassword: string){
+  validateLogin(userEmail: string, userPassword: string) {
     const profile = this.users.find((email) => userEmail === email.email);
     if (profile == undefined) return null;
     const isValidLogin = profile.password === userPassword;
