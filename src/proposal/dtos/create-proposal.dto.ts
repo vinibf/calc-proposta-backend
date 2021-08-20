@@ -1,11 +1,10 @@
+import { Load } from '../entities/load.entity';
+import { PowerSupplyEnum, SubmarketEnum } from '../helpers/enums.helper';
+
 export class CreateProposalDto {
-  id: number;
-  publicId: Guid;
   startDate: Date;
   endDate: Date;
-  load: ;
-  submarket: ;
-  powerSupply: ;
-  contracted: boolean;
-  userId: Guid;
+  loads: Load[];
+  powerSupply: PowerSupplyEnum;
+  submarket: SubmarketEnum;
 }
