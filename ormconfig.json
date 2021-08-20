@@ -1,11 +1,17 @@
 {
   "type": "postgres",
-  "host": "localhost",
-  "port": 3306,
-  "username": "root",
-  "password": "root",
-  "database": "test",
-  "entities": ["src/**/*.entity{.ts,.js}"],
+  "host": "ec2-3-217-68-126.compute-1.amazonaws.com",
+  "port": 5432,
+  "username": "oktgmvbigfmfeg",
+  "password": "704828a8aad14beefeaf04a49e1d86ba8dba8bb22e4a5c09074d663ef2318831",
+  "database": "d28af4hogli1oe",
+  "ssl": true,
+  "extra": {
+    "ssl": {
+      "rejectUnauthorized": false
+    }
+  },
+  "entities": ["dist/**/*.entity{.ts,.js}"],
   "autoLoadModels": true,
   "synchronize": true
 }
