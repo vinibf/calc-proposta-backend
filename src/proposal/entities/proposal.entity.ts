@@ -1,62 +1,35 @@
-import { BaseEntity } from 'src/shared/base.entity';
-import { Entity, Column, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
+import { CommonEntity } from 'src/shared/common.entity';
+import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 import { PowerSupplyEnum, SubmarketEnum } from '../helpers/enums.helper';
-import { Load } from './load.entity';
+import { Charge } from './charge.entity';
 
-@Entity()
-export class Proposal extends BaseEntity {
-  @Column()
+@Entity({ name: 'TB_PROPOSAL' })
+export class Proposal extends CommonEntity {
+  @Column({ type: 'date', name: 'STARTED_DT' })
   public startDate: Date;
 
-  @Column()
+  @Column({ type: 'date', name: 'END_DT' })
   public endDate: Date;
 
-  @ManyToMany(() => Load)
+  @ManyToMany(() => Charge)
   @JoinTable()
-  public loads: Load[];
+  public charges: Charge[];
 
-  @Column({ type: 'enum', enum: PowerSupplyEnum })
+  @Column({ type: 'enum', enum: PowerSupplyEnum, name: 'POWER_SUP' })
   public powerSupply: PowerSupplyEnum;
 
-  @Column({ type: 'enum', enum: SubmarketEnum })
+  @Column({ type: 'enum', enum: SubmarketEnum, name: 'SUBMARKET' })
   public submarket: SubmarketEnum;
 
-  @Column()
+  @Column({ type: 'boolean', name: 'CONTRACTED', default: false })
   public contracted: boolean;
 
   // @ManyToOne(() => User, user => user.proposals)
   // public user: User;
 
-  constructor(
-    startDate: string,
-    endDate: string,
-    loads: { title: string; consumptionKwh: string }[],
-    powerSupply: string,
-    submarket: string,
-  ) {
+  constructor(startDate: string, endDate: string) {
     super();
     this.startDate = new Date(startDate);
     this.endDate = new Date(endDate);
-
-    loads.forEach((val) => {
-      this.loads.push(new Load(val.title, val.consumptionKwh));
-    });
-
-    this.powerSupply = PowerSupplyEnum[powerSupply]; // ?
-    this.submarket = SubmarketEnum[submarket]; // ?
-    this.contracted = false;
   }
-
-  // getTotalConsumption(): number {
-  //   return this.loads.reduce((ac, cur) => (ac += cur.consumptionKwh), 0);
-  // }
-
-  // getTotalHrsOfContract(): number {
-  //   const milliSeconds = this.endDate.getTime() - this.startDate.getTime();
-  //   return milliSeconds / 1000 / 3600;
-  // }
-
-  // getProposalValue(): number {
-  //   return this.getTotalConsumption() * this.getTotalHrsOfContract() * (10);
-  // }
 }
