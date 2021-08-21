@@ -1,28 +1,39 @@
-import { Injectable } from '@nestjs/common';
-//import { InjectRepository } from '@nestjs/typeorm';
-//import { Guid } from 'guid-typescript';
-//import { Repository } from 'typeorm';
-//import { CreateProposalDto } from '../dtos/create-proposal.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Guid } from 'guid-typescript';
+import { Repository } from 'typeorm';
+import { CreateProposalDto } from '../dtos/create-proposal.dto';
 //import { UpdateProposalDto } from '../dtos/update-proposal.dto';
 import { Proposal } from '../entities/proposal.entity';
 
 @Injectable()
 export class ProposalService {
-  // constructor(
-  //   @InjectRepository(Proposal)
-  //   private proposalRepository: Repository<Proposal>,
-  // ) {}
+  constructor(
+    @InjectRepository(Proposal)
+    private proposalRepository: Repository<Proposal>,
+  ) {}
+
   getAll(): Promise<Proposal[]> {
     return this.proposalRepository.find({ order: { createdAt: 'DESC' } });
   }
-  // create(dto: CreateProposalDto): Promise<Proposal> {
-  //   //const entity = new Proposal(dto);
-  //   //return this.proposalRepository.save(entity);
-  //   return;
-  // }
-  // findOne(id: Guid): Promise<Proposal> {
-  //   return this.proposalRepository.findOne(id.toString());
-  // }
+
+  getByUserId(id: Guid): Promise<Proposal[]> {
+    return this.proposalRepository.findByIds([id.toString()]);
+  }
+
+  create(dto: CreateProposalDto): Promise<Proposal> {
+    let val;
+    if (this.isValidTimeRange(dto.startDate, dto.endDate)) {
+      val = new Proposal(dto.startDate, dto.endDate);
+    }
+
+    return this.proposalRepository.save(val);
+  }
+
+  isValidTimeRange(startDate: string, endDate: string) {
+    return new Date(endDate).getTime() > new Date(startDate).getTime();
+  }
+
   // async certificate(id: Guid, dto: UpdateProposalDto): Promise<Proposal> {
   //   return;
   // }

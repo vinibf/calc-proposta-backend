@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
-//import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ChargeController } from './controllers/charge.controller';
 import { ProposalController } from './controllers/proposal.controller';
-//import { Proposal } from './entities/proposal.entity';
+import { Charge } from './entities/charge.entity';
+import { Proposal } from './entities/proposal.entity';
+import { ChargeService } from './services/charge.service';
 import { ProposalService } from './services/proposal.service';
-//import { LoadController } from './controllers/load.controller';
-//import { Load } from './entities/load.entity';
-//import { LoadService } from './services/load.service';
 
 @Module({
-  /*TypeOrmModule.forFeature([Proposal, Charge])*/
-  imports: [],
-  //exports: [TypeOrmModule],
-  providers: [ProposalService], //, ChargeService
-  controllers: [ProposalController], //, ChargeController
+  imports: [TypeOrmModule.forFeature([Proposal, Charge])],
+  exports: [TypeOrmModule],
+  providers: [ProposalService, ChargeService],
+  controllers: [ProposalController, ChargeController],
 })
 export class ProposalModule {}
