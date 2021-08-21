@@ -62,4 +62,7 @@ export class UserService {
       (profile) => profile.email == email && profile.id == id,
     );
   }
+  async getAll() {
+    return this.users;
+  }
 }

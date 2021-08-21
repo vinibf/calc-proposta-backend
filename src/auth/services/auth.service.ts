@@ -34,4 +34,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Password');
     }
   }
+  async getUserIdByToken(token: string): Promise<string> {
+    const payload = await this.jwtService.verify(token);
+
+    console.log(payload);
+
+    return 'payload';
+  }
 }
